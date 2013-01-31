@@ -184,6 +184,59 @@ end
 
 ---
 
+# Puppet mode
+
+* Master - Slave
+* Run once
+  * ```puppet apply file.pp```
+
+---
+
+# Example
+
+```ruby
+user { 'smat':
+  ensure => present,
+}
+```
+---
+
+# Example
+
+```ruby
+file { '/vagrant/testfile':
+  ensure => present,
+  content => "echo 'Hello'",
+  owner  => vagrant,
+  group => vagrant,
+}
+```
+
+---
+
+# Resources
+
+* File
+* User
+* Package
+* Service
+* ...
+
+---
+
+# Exercise
+
+* Use ```vagrant ssh``` to enter your VM
+* ```cd /vagrant``` to access your local files
+* Create a recipie that
+  * Creates [a user](http://docs.puppetlabs.com/references/latest/type.html#user) ```bekk``` with managed home directory
+  * Creates [a file](http://docs.puppetlabs.com/references/latest/type.html#file) ```.bashrc``` in the user home directory
+
+---
+
+
+
+
 
     </textarea>
     <div id="slideshow"></div>
