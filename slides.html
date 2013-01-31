@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="https://github.com/downloads/gnab/remark/remark-0.4.4.min.js" type="text/javascript"></script>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <style type="text/css" media="screen">
+      /* Slideshow styles */
+      .content {
+        font-size: 40px;
+        font-family: Open Sans, Arial, sans-serif;
+        color: #333333;
+        letter-spacing: -2px;
+      }
+
+      #slideshow .slide .content pre, #slideshow .slide .content code {
+        font-size: 32px;
+        border: solid grey 3px;
+        border-radius: 5px;
+        background: #DDDDDD;
+      }
+
+      #slideshow .slide .small-code code {
+        font-size: 20px;
+      }
+
+      #slideshow .slide .content {
+        padding: 0.5em 2em 0.5em 2em;
+      }
+
+      code {
+        letter-spacing: 0px;
+      }
+    </style>
+
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# DevOps
+
+---
+
+# Vagrant
+
+* ```vagrant up``` and you have a virtual machine ready
+* Check in configuration of your virtual machine
+* Configure in Vagrantfile
+
+[vagrantup.com](http://vagrantup.com)
+
+---
+
+# Vagrant usages
+
+* Production-like environment
+* Test everything on your local machine
+* Isolated environment
+
+---
+
+# Excercise:
+
+* Run ```vagrant up``` to boot up your virtual machine
+* Run ```vagrant ssh``` to log into it
+* Run ```ls /vagrant/```
+* Run ```touch /vagrant/created_in_vm.txt```
+* Find the file you created on you local disk
+
+---
+
+# Basic Unix/Linux commands
+
+* ```ls``` List directory
+* ```cd``` Change directory
+* ```echo "Hey"``` Prints "Hey"
+* ```touch``` Create/update timestamp of file
+
+---
+
+# Pipes
+
+* stdin, stderr, stdout
+
+---
+
+# Executable scripts
+
+* ```#!/bin/bash``` Runs script in bash
+* ```chmod 755 filename.sh```
+* 1 - Executable
+* 2 - Writeable
+* 4 - Readable
+* uga = User - Group - All
+
+---
+
+# Shell provision
+
+* Make vagrant run a script each time the VM is created
+* ```vagrant provision``` to run the same script again
+* Must be repeatable (will be run multiple times by Vagrant)
+
+---
+class: small-code
+
+# Example
+
+```Vagrantfile``` is Ruby code!
+
+```ruby
+Vagrant::Config.run do |config|
+  config.vm.provision :shell, :path => "bin/test.sh"
+end
+```
+
+---
+
+# Exercise:
+
+* Create a provision script that Vagrant uses
+* The script should create ```foo.txt``` with some content
+* Run ```vagrant provision``` to test your setup
+
+[Vagrant shell provisioning](http://docs.vagrantup.com/v1/docs/provisioners/shell.html)
+
+---
+
+# Multiple VMs
+
+* Different configuration
+* Different provisioning
+* Create network for all VMs
+
+---
+class: small-code
+
+# Example
+
+```ruby
+Vagrant::Config.run do |config|
+  # Shared config
+  config.vm.box = "devops-kurs"
+
+  config.vm.define :web do |web_config|
+    web_config.vm.box = "web"
+  end
+
+  config.vm.define :db do |db_config|
+    db_config.vm.box = "db"
+  end
+end
+```
+
+---
+
+# Exercise
+
+* Modify your ```Vagrantfile``` to create two virtual machines
+* Use two different provisioning scripts for the VMs
+
+[Multiple VMs](http://docs.vagrantup.com/v1/docs/multivm.html)<br/>
+[Config reference](http://docs.vagrantup.com/v1/docs/vagrantfile.html)
+
+---
+
+# Puppet
+
+* Configuration management
+* Infrastructe as code
+
+---
+
+# Puppet
+
+* Platform independant(-ish)
+* Supports Win, Linux, OS X
+* Master - slave architecture
+* Enforces consistent configuration across environments and servers
+
+---
+
+
+    </textarea>
+    <div id="slideshow"></div>
+  </body>
+</html>
