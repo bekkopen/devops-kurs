@@ -62,6 +62,12 @@ class: center, middle
 
 ---
 
+# Slides
+
+http://bekkopen.github.com/devops-kurs/slides.html
+
+---
+
 # Vagrant
 
 * ```vagrant up``` and you have a virtual machine ready
@@ -80,7 +86,7 @@ class: center, middle
 
 ---
 
-# Excercise (5min):
+# Excercise (5 min):
 
 * Run ```vagrant up``` to boot up your virtual machine
 * Run ```vagrant ssh``` to log into it
@@ -169,6 +175,13 @@ end
 
 ---
 
+# Commands on one VM
+
+* ```vagrant ssh web```
+* ```vagrant provision db```
+
+---
+
 # Exercise (10 min):
 
 * Modify your ```Vagrantfile``` to create two virtual machines
@@ -232,6 +245,7 @@ file { '/vagrant/testfile':
 * User
 * Package
 * Service
+* Host
 * ...
 
 ---
@@ -239,7 +253,8 @@ file { '/vagrant/testfile':
 # Excercise hints
 
 * Create your puppet-file in ```manifests/```
-* Run (inside the VM)
+* Run
+  * ```vagrant ssh web```
   * ```cd /vagrant/manifests```
   * ```puppet apply <filename>.pp```
 
@@ -247,11 +262,12 @@ file { '/vagrant/testfile':
 
 # Exercise (10 min):
 
-* Use ```vagrant ssh``` to enter your VM
+* Use ```vagrant ssh web``` to enter your VM
 * ```cd /vagrant``` to access your local files
 * Create a recipie that
   * Creates [a user](http://docs.puppetlabs.com/references/latest/type.html#user) ```bekk``` with managed home directory
   * Creates [a file](http://docs.puppetlabs.com/references/latest/type.html#file) ```.bashrc``` in the user home directory
+* Do next exercise
 
 ---
 
@@ -259,7 +275,7 @@ file { '/vagrant/testfile':
 
 * Configure Vagrant to run puppet modules
 * Use ```manifests/default.pp``` as your root puppet recipie
-* ```vagrant provision``` should run your puppet recipie
+* ```vagrant provision web``` should run your puppet recipie
 
 Docs:
 [Vagrant documentation](http://docs.vagrantup.com/v1/docs/provisioners/puppet.html)
@@ -347,9 +363,8 @@ package {'iptables':
 ```
 
 ---
-class: small
 
-# Exercise (20min):
+# Exercise (20 min):
 
 * Create a class that installs Apache (httpd)
 * Start Apache (httpd)
@@ -370,27 +385,22 @@ class: small-code
 ```
 manifests
 modules/
-  - web
-    - manifests
-      - init.pp
-    - files
-    - templates
-  - ssh
+  \ web
+    | manifests
+    | \ init.pp
+    | files
+    \ templates
+  \ ssh
     ...
 ```
 ---
 
 # Modules
 
-* Auto-import
+* Auto-import root class
   - ```web```
   - ```modules/web/manifests/init.pp```
-
----
-
-# Modules
-
-* Auto-import
+* Auto-import class in module
   - ```web::server```
   - ```modules/web/manifests/server.pp```
 
@@ -410,28 +420,6 @@ include web::server
 * Check that nothing happens when you run ```puppet apply``` or ```vagrant provision```
 
 ---
-
-# Warning
-
-* A lot of foils
-
----
-class: small-code
-
-# Node
-
-```ruby
-node app {
-  include web::server
-}
-node "*.domain.com", "somehost.otherdomain.com" inherits app {
-  include web::site
-}
-node default {
-}
-```
-
----
 class: small-code
 
 # Inheritance
@@ -448,6 +436,37 @@ class ssh-server inherits ssh {
   }
 }
 ```
+
+---
+class: small-code
+
+# Node
+
+```ruby
+node default {
+  include ssh::server
+}
+node app inherits default {
+  include web::server
+}
+node "*.domain.com", "somehost.otherdomain.com" inherits app {
+  include web::site
+}
+```
+
+---
+
+# Exercise (5 min):
+
+* Set a hostname for each VM
+* Apply the hostname with ```vagrant reload```
+* Configure nodes in puppet
+  * ```web``` should install Apache
+  * ```db``` should not
+
+Docs:
+[Host name](http://docs.vagrantup.com/v1/docs/config/vm/host_name.html)
+[Node-resource](http://docs.puppetlabs.com/guides/language_guide.html#nodes)
 
 ---
 
@@ -574,6 +593,21 @@ ListenAddress <%= listen %>
 ```
 
 ---
+class: smaller, small-code
+
+# Exercise (30 min):
+
+* Create a Puppet resource to create a site/virtual host in Apache
+* An example config-file is ```apache.conf``` in repo
+* Apache loads all files in ```/etc/httpd/conf.d```
+* Each site should have its own user, that can add HTML-files
+* Create a ```index.html``` for each site
+* Use port forward in Vagrant to forward new site to your machine locally
+* Test that everything works
+
+---
+
+# Bonus!!
 
     </textarea>
     <div id="slideshow"></div>
