@@ -15,11 +15,28 @@
         letter-spacing: -2px;
       }
 
+      h1 {
+        font-size: 1.2em;
+      }
+
       #slideshow .slide .content pre, #slideshow .slide .content code {
         font-size: 32px;
         border: solid grey 3px;
         border-radius: 5px;
         background: #DDDDDD;
+      }
+
+      a:visited {
+        color: blue;
+      }
+
+
+      .small {
+        font-size: 35px;
+      }
+
+      .smaller {
+        font-size: 30px;
       }
 
       #slideshow .slide .small-code code {
@@ -63,7 +80,7 @@ class: center, middle
 
 ---
 
-# Excercise:
+# Excercise (5min):
 
 * Run ```vagrant up``` to boot up your virtual machine
 * Run ```vagrant ssh``` to log into it
@@ -79,12 +96,6 @@ class: center, middle
 * ```cd``` Change directory
 * ```echo "Hey"``` Prints "Hey"
 * ```touch``` Create/update timestamp of file
-
----
-
-# Pipes
-
-* stdin, stderr, stdout
 
 ---
 
@@ -120,7 +131,7 @@ end
 
 ---
 
-# Exercise:
+# Exercise (10 min):
 
 * Create a provision script that Vagrant uses
 * The script should create ```foo.txt``` with some content
@@ -158,11 +169,12 @@ end
 
 ---
 
-# Exercise
+# Exercise (10 min):
 
 * Modify your ```Vagrantfile``` to create two virtual machines
 * Use two different provisioning scripts for the VMs
 
+Docs:
 [Multiple VMs](http://docs.vagrantup.com/v1/docs/multivm.html)<br/>
 [Config reference](http://docs.vagrantup.com/v1/docs/vagrantfile.html)
 
@@ -171,7 +183,7 @@ end
 # Puppet
 
 * Configuration management
-* Infrastructe as code
+* Infrastructure as code
 
 ---
 
@@ -224,7 +236,16 @@ file { '/vagrant/testfile':
 
 ---
 
-# Exercise
+# Excercise hints
+
+* Create your puppet-file in ```manifests/```
+* Run (inside the VM)
+  * ```cd /vagrant/manifests```
+  * ```puppet apply <filename>.pp```
+
+---
+
+# Exercise (10 min):
 
 * Use ```vagrant ssh``` to enter your VM
 * ```cd /vagrant``` to access your local files
@@ -234,9 +255,325 @@ file { '/vagrant/testfile':
 
 ---
 
+# Exercise (5 min):
 
+* Configure Vagrant to run puppet modules
+* Use ```manifests/default.pp``` as your root puppet recipie
+* ```vagrant provision``` should run your puppet recipie
 
+Docs:
+[Vagrant documentation](http://docs.vagrantup.com/v1/docs/provisioners/puppet.html)
 
+---
+class: small-code
+
+# Classes (ssh.pp)
+
+```ruby
+class ssh {
+  package {'openssh-server':
+    ensure => present,
+  }
+
+  service {'sshd':
+    ensure => running,
+    require => Package['openssh-clients'],
+  }
+}
+```
+
+---
+
+# Classes
+
+```ruby
+include ssh
+```
+
+---
+class: small-code
+
+# Dependencies
+
+```ruby
+class ssh {
+  package {'openssh-server':
+    ensure => present,
+  }
+
+  file {'/etc/sshd_config':
+    ensure => present,
+    require => Package['openssh-server'],
+  }
+
+  service {'sshd':
+    ensure => running,
+    subcribe => File['/etc/sshd_config'],
+  }
+}
+```
+
+---
+class: small-code
+
+# Dependencies (reverse)
+
+```ruby
+class ssh {
+  package {'openssh-server':
+    ensure => present,
+    before => File['/etc/sshd_config'],
+  }
+
+  file {'/etc/sshd_config':
+    ensure => present,
+    notify => Service['sshd'],
+  }
+
+  service {'sshd':
+    ensure => running,
+  }
+}
+```
+
+---
+
+# Stopping a service
+
+```ruby
+package {'iptables':
+  ensure => stopped,
+}
+```
+
+---
+class: small
+
+# Exercise (20min):
+
+* Create a class that installs Apache (httpd)
+* Start Apache (httpd)
+* Disable firewall (iptables)
+* Forward port 80 from the VM to 8585 on the local machine
+* Open http://localhost:8585/ and see a result
+
+Docs:
+[Package](http://docs.puppetlabs.com/references/latest/type.html#package)
+[Service](http://docs.puppetlabs.com/references/latest/type.html#service)
+[Vagrant docs](http://docs.vagrantup.com/v1/docs/config/vm/forward_port.html)
+
+---
+class: small-code
+
+# Modules
+
+```
+manifests
+modules/
+  - web
+    - manifests
+      - init.pp
+    - files
+    - templates
+  - ssh
+    ...
+```
+---
+
+# Modules
+
+* Auto-import
+  - ```web```
+  - ```modules/web/manifests/init.pp```
+
+---
+
+# Modules
+
+* Auto-import
+  - ```web::server```
+  - ```modules/web/manifests/server.pp```
+
+---
+
+# Modules
+
+```
+include web::server
+```
+
+---
+
+# Exercise (5 min):
+
+* Refactor Apache into a module
+* Check that nothing happens when you run ```puppet apply``` or ```vagrant provision```
+
+---
+
+# Warning
+
+* A lot of foils
+
+---
+class: small-code
+
+# Node
+
+```ruby
+node app {
+  include web::server
+}
+node "*.domain.com", "somehost.otherdomain.com" inherits app {
+  include web::site
+}
+node default {
+}
+```
+
+---
+class: small-code
+
+# Inheritance
+
+```ruby
+class ssh {
+  package {'openssh-client':
+    ensure => present,
+  }
+}
+class ssh-server inherits ssh {
+  package {'openssh-server':
+    ensure => present,
+  }
+}
+```
+
+---
+
+# Parameterization
+
+```
+java::deployer {'smat':
+  public_key => 'ssh-rsa AAAAB3Nc2...',
+}
+```
+
+```
+java::deployer {'smat':
+  ensure => absent,
+}
+```
+
+---
+class: smaller, small-code
+
+```
+define java::deployer($public_key, $ensure = present) {
+  $directory = $ensure ? {
+    present => 'directory',
+    default => $ensure
+  }
+  user {$name:
+    ensure => $ensure,
+    managehome => true,
+    home => "/home/${name}",
+  }
+  file {"/home/$name/.ssh":
+    ensure => $directory,
+    mode => 0755,
+  }
+  file {"/home/$name/.ssh/authorized_keys":
+    ensure => $ensure,
+    content => $public_key,
+    mode => 0644,
+  }
+}
+```
+
+---
+
+# Previous slide
+
+* Defined resource
+  * Implicit variable ```$name```
+* Paramteres
+* Puppet language (case)
+* Variables
+* Difference between "" and ''
+
+---
+
+# Define vs Class
+
+* Define: Multiple instances
+  * Web-site
+  * Database-schema
+* Class: Singleton
+  * Web-server
+  * Database-server
+
+---
+
+# Fileserver
+
+* Puppet has an internal fileserver
+* Files in ```files/``` and ```templates/``` are available
+
+---
+class: small-code
+
+# Fileserver
+
+```
+class ssh::server {
+  file { '/etc/sshd_config':
+    ensure => present,
+    source => "puppet:///modules/ssh/sshd_config"
+  }
+}
+```
+
+```bash
+manifests/ssh/files/sshd_config
+```
+
+---
+class: small-code
+
+# Templates
+
+* ERB (Embedded Ruby) files
+* Inherits variables from resource
+
+---
+class: small-code
+
+# Templates
+
+```ruby
+class ssh::server($listen = '0.0.0.0') {
+  file { '/etc/sshd_config':
+    ensure => present,
+    content => template("ssh/sshd_config.erb")
+  }
+}
+```
+
+```bash
+manifests/ssh/templates/sshd_config.erb
+```
+
+---
+class: small-code
+
+# Templates
+
+```erb
+ListenAddress <%= listen %>
+```
+
+---
 
     </textarea>
     <div id="slideshow"></div>
