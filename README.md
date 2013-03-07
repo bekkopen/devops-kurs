@@ -37,7 +37,7 @@ Ruby for Mac (without Homebrew) or Linux
 
 Install either [rbenv](https://github.com/sstephenson/rbenv/#basic-github-checkout) or [rvm](https://rvm.io/)
 
-# rbenv
+### rbenv
 
 ```bash
 # After installing rbenv
@@ -47,7 +47,7 @@ ruby -version            # Check that it show the correct version
 ```
 
 
-# rvm
+### rvm
 
 ```bash
 rvm install 1.9.3
