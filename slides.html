@@ -601,13 +601,33 @@ class: smaller, small-code
 * An example config-file is ```apache.conf``` in repo
 * Apache loads all files in ```/etc/httpd/conf.d```
 * Each site should have its own user, that can add HTML-files
+* Each site should use its own port
 * Create a ```index.html``` for each site
 * Use port forward in Vagrant to forward new site to your machine locally
 * Test that everything works
 
 ---
+class: smaller, small-code
 
-# Bonus!!
+# Bonus: Reverse proxy
+
+It is possible to configure Apache to forward request to another webserver. This is often used in test environments to let multiple applications share the same port.
+
+Example: You have two applications:
+
+* App1 on http://localhost:8001/app1
+* App2 on http://localhost:8002/app2.
+
+Apache could then let all requests to /app1 be forwarded to port 8001 and all requests to /app2 be forwarded to port 8002
+
+---
+
+# Bonus: Reverse proxy
+
+* Create a Puppet resource to create a site with multiple reverse proxies
+* Let ```/google``` on your Apache show google.com, and ```/bing``` show bing.com
+
+---
 
     </textarea>
     <div id="slideshow"></div>
