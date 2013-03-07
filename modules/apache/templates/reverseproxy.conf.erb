@@ -1,0 +1,8 @@
+<VirtualHost *:<%= port %>>
+  ServerName <%= servername %>
+  DocumentRoot <%= documentroot %>
+
+  <% proxies.each do |path, url| %>
+  ProxyPass <%= path %> <%= url %>
+  <% end %>
+</VirtualHost>

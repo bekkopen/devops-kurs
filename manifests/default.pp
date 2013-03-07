@@ -16,6 +16,13 @@ node 'web.lan' inherits base {
     ipAddress => "*",
     port      => '8081',
   }
+
+  apache::reverseproxy {"google":
+    port         => 80,
+    servername   => "startside.tld",
+    documentroot => "/var/www/html/startside",
+    proxies      => {"/google" => "http://www.google.no", "/bing" => "http://www.bing.com"}
+  }
 }
 
 node default inherits base {
