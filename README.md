@@ -29,7 +29,7 @@ brew install rbenv
 brew install ruby-build
 rbenv install 1.9.3-p327
 rbenv local 1.9.3-p327
-ruby -version            # Check that it show the correct version
+ruby --version            # Check that it show the correct version
 ```
 
 Ruby for Mac (without Homebrew) or Linux
@@ -43,7 +43,7 @@ Install either [rbenv](https://github.com/sstephenson/rbenv/#basic-github-checko
 # After installing rbenv
 rbenv install 1.9.3-p327
 rbenv local 1.9.3-p327
-ruby -version            # Check that it show the correct version
+ruby --version            # Check that it show the correct version
 ```
 
 
@@ -52,6 +52,6 @@ ruby -version            # Check that it show the correct version
 ```bash
 rvm install 1.9.3
 rvm use 1.9.3
-ruby -version            # Check that it show the correct version
+ruby --version            # Check that it show the correct version
 ```
 
