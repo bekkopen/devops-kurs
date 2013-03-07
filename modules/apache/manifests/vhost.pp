@@ -12,7 +12,7 @@ define apache::vhost($source,
     group  => $group,
   }
 
-  file {"${markupDir}/welcome.html":
+  file {"${markupDir}/index.html":
     ensure  => present,
     source  => $source,
     owner   => $owner,
@@ -25,7 +25,7 @@ define apache::vhost($source,
     content => template('apache/vhost.conf.erb'),
     owner   => $owner,
     group   => $group,
-    require => File["${markupDir}/welcome.html"],
+    require => File["${markupDir}/index.html"],
     notify  => Service['httpd'],
   }
 }

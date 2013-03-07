@@ -13,6 +13,8 @@ Vagrant::Config.run do |config|
 
   config.vm.define :web do |host_config|
     host_config.vm.forward_port 80, 8585
+    host_config.vm.forward_port 8080, 8580
+    host_config.vm.forward_port 8081, 8581
     host_config.vm.host_name = "web.lan"
   end
   
