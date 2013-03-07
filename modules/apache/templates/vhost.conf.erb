@@ -1,0 +1,8 @@
+Listen <%= port %>
+
+NameVirtualHost <%= ipAddress %>:<%= port %>
+
+<VirtualHost <%= ipAddress %>:<%= port %>>
+  ServerName <%= name %>.tld
+  DocumentRoot <%= markupDir %>
+</VirtualHost>
