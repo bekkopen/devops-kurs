@@ -169,11 +169,11 @@ Vagrant::Config.run do |config|
   config.vm.box = "devops-kurs"
 
   config.vm.define :web do |web_config|
-    web_config.vm.box = "web"
+    config.vm.provision :shell, :path => "bin/web.sh"
   end
 
   config.vm.define :db do |db_config|
-    db_config.vm.box = "db"
+    config.vm.provision :shell, :path => "bin/db.sh"
   end
 end
 ```
