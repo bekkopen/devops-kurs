@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="https://github.com/downloads/gnab/remark/remark-0.4.4.min.js" type="text/javascript"></script>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <style type="text/css" media="screen">
+      /* Slideshow styles */
+      .content {
+        font-size: 40px;
+        font-family: Open Sans, Arial, sans-serif;
+        color: #333333;
+        letter-spacing: -2px;
+      }
+
+      h1 {
+        font-size: 1.2em;
+      }
+
+      #slideshow .slide .content pre, #slideshow .slide .content code {
+        font-size: 32px;
+        border: solid grey 3px;
+        border-radius: 5px;
+        background: #DDDDDD;
+      }
+
+      a:visited {
+        color: blue;
+      }
+
+
+      .small {
+        font-size: 35px;
+      }
+
+      .smaller {
+        font-size: 30px;
+      }
+
+      #slideshow .slide .small-code code {
+        font-size: 20px;
+      }
+
+      #slideshow .slide .content {
+        padding: 0.5em 2em 0.5em 2em;
+      }
+
+      code {
+        letter-spacing: 0px;
+      }
+    </style>
+
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# DevOps
+
+---
+
+# Slides
+
+http://bekkopen.github.com/devops-kurs/slides.html
+
+---
+class: center, middle
+
+# What is DevOps?
+
+---
+
+# Vagrant
+
+* ```vagrant up``` and you have a virtual machine ready
+* Check in configuration of your virtual machine
+* Configure in Vagrantfile
+
+[vagrantup.com](http://vagrantup.com)
+
+---
+
+# Vagrant usages
+
+* Production-like environment
+* Test everything on your local machine
+* Isolated environment
+
+---
+
+# Excercise (5 min):
+
+* Run ```vagrant up``` to boot up your virtual machine
+* Run ```vagrant ssh``` to log into it
+* Run ```ls /vagrant/```
+* Run ```touch /vagrant/created_in_vm.txt```
+* Find the file you created on you local disk
+
+---
+
+# Basic Unix/Linux commands
+
+* ```ls``` List directory
+* ```cd``` Change directory
+* ```echo "Hey"``` Prints "Hey"
+* ```touch``` Create/update timestamp of file
+
+---
+
+# Executable scripts
+
+* ```#!/bin/bash``` Runs script in bash
+* ```chmod 755 filename.sh```
+* 1 - Executable
+* 2 - Writeable
+* 4 - Readable
+* uga = User - Group - All
+
+---
+
+# Shell provision
+
+* Make vagrant run a script each time the VM is created
+* ```vagrant provision``` to run the same script again
+* Must be repeatable (will be run multiple times by Vagrant)
+
+---
+class: small-code
+
+# Example
+
+```Vagrantfile``` is Ruby code!
+
+```ruby
+Vagrant::Config.run do |config|
+  config.vm.provision :shell, :path => "bin/test.sh"
+end
+```
+
+---
+
+# Exercise (10 min):
+
+* Create a provision script that Vagrant uses
+* The script should create ```foo.txt``` with some content
+* Run ```vagrant provision``` to test your setup
+
+[Vagrant shell provisioning](http://docs.vagrantup.com/v1/docs/provisioners/shell.html)
+
+---
+
+# Multiple VMs
+
+* Different configuration
+* Different provisioning
+* Create network for all VMs
+
+---
+class: small-code
+
+# Example
+
+```ruby
+Vagrant::Config.run do |config|
+  # Shared config
+  config.vm.box = "devops-kurs"
+
+  config.vm.define :web do |web_config|
+    web_config.vm.box = "web"
+  end
+
+  config.vm.define :db do |db_config|
+    db_config.vm.box = "db"
+  end
+end
+```
+
+---
+
+# Commands on one VM
+
+* ```vagrant ssh web```
+* ```vagrant provision db```
+
+---
+
+# Exercise (10 min):
+
+* Modify your ```Vagrantfile``` to create two virtual machines
+* Use two different provisioning scripts for the VMs
+
+Docs:
+[Multiple VMs](http://docs.vagrantup.com/v1/docs/multivm.html)<br/>
+[Config reference](http://docs.vagrantup.com/v1/docs/vagrantfile.html)
+
+---
+
+# Puppet
+
+* Configuration management
+* Infrastructure as code
+
+---
+
+# Puppet
+
+* Platform independant(-ish)
+* Supports Win, Linux, OS X
+* Master - slave architecture
+* Enforces consistent configuration across environments and servers
+
+---
+
+# Puppet mode
+
+* Master - Slave
+* Run once
+  * ```puppet apply file.pp```
+
+---
+
+# Example
+
+```ruby
+user { 'smat':
+  ensure => present,
+}
+```
+---
+
+# Example
+
+```ruby
+file { '/vagrant/testfile':
+  ensure => present,
+  content => "echo 'Hello'",
+  owner  => vagrant,
+  group => vagrant,
+}
+```
+
+---
+
+# Resources
+
+* File
+* User
+* Package
+* Service
+* Host
+* ...
+
+---
+
+# Excercise hints
+
+* Create your puppet-file in ```manifests/```
+* Run
+  * ```vagrant ssh web```
+  * ```cd /vagrant/manifests```
+  * ```puppet apply <filename>.pp```
+
+---
+
+# Exercise (10 min):
+
+* Use ```vagrant ssh web``` to enter your VM
+* ```cd /vagrant``` to access your local files
+* Create a recipie that
+  * Creates [a user](http://docs.puppetlabs.com/references/latest/type.html#user) ```bekk``` with managed home directory
+  * Creates [a file](http://docs.puppetlabs.com/references/latest/type.html#file) ```.bashrc``` in the user home directory
+* Do next exercise
+
+---
+
+# Exercise (5 min):
+
+* Configure Vagrant to run puppet modules
+* Use ```manifests/default.pp``` as your root puppet recipie
+* ```vagrant provision web``` should run your puppet recipie
+
+Docs:
+[Vagrant documentation](http://docs.vagrantup.com/v1/docs/provisioners/puppet.html)
+
+---
+class: small-code
+
+# Classes (ssh.pp)
+
+```ruby
+class ssh {
+  package {'openssh-server':
+    ensure => present,
+  }
+
+  service {'sshd':
+    ensure => running,
+    require => Package['openssh-clients'],
+  }
+}
+```
+
+---
+
+# Classes
+
+```ruby
+include ssh
+```
+
+---
+class: small-code
+
+# Dependencies
+
+```ruby
+class ssh {
+  package {'openssh-server':
+    ensure => present,
+  }
+
+  file {'/etc/sshd_config':
+    ensure => present,
+    require => Package['openssh-server'],
+  }
+
+  service {'sshd':
+    ensure => running,
+    subcribe => File['/etc/sshd_config'],
+  }
+}
+```
+
+---
+class: small-code
+
+# Dependencies (reverse)
+
+```ruby
+class ssh {
+  package {'openssh-server':
+    ensure => present,
+    before => File['/etc/sshd_config'],
+  }
+
+  file {'/etc/sshd_config':
+    ensure => present,
+    notify => Service['sshd'],
+  }
+
+  service {'sshd':
+    ensure => running,
+  }
+}
+```
+
+---
+
+# Stopping a service
+
+```ruby
+package {'iptables':
+  ensure => stopped,
+}
+```
+
+---
+
+# Exercise (20 min):
+
+* Create a class that installs Apache (httpd)
+* Start Apache (httpd)
+* Disable firewall (iptables)
+* Forward port 80 from the VM to 8585 on the local machine
+* Open http://localhost:8585/ and see a result
+
+Docs:
+[Package](http://docs.puppetlabs.com/references/latest/type.html#package)
+[Service](http://docs.puppetlabs.com/references/latest/type.html#service)
+[Vagrant docs](http://docs.vagrantup.com/v1/docs/config/vm/forward_port.html)
+
+---
+class: small-code
+
+# Modules
+
+```
+manifests
+modules/
+  \ web
+    | manifests
+    | \ init.pp
+    | files
+    \ templates
+  \ ssh
+    ...
+```
+---
+
+# Modules
+
+* Auto-import root class
+  - ```web```
+  - ```modules/web/manifests/init.pp```
+* Auto-import class in module
+  - ```web::server```
+  - ```modules/web/manifests/server.pp```
+
+---
+
+# Modules
+
+```
+include web::server
+```
+
+---
+
+# Exercise (5 min):
+
+* Refactor Apache into a module
+* Check that nothing happens when you run ```puppet apply``` or ```vagrant provision```
+
+---
+class: small-code
+
+# Inheritance
+
+```ruby
+class ssh {
+  package {'openssh-client':
+    ensure => present,
+  }
+}
+class ssh-server inherits ssh {
+  package {'openssh-server':
+    ensure => present,
+  }
+}
+```
+
+---
+class: small-code
+
+# Node
+
+```ruby
+node default {
+  include ssh::server
+}
+node app inherits default {
+  include web::server
+}
+node "*.domain.com", "somehost.otherdomain.com" inherits app {
+  include web::site
+}
+```
+
+---
+
+# Exercise (5 min):
+
+* Set a hostname for each VM
+* Apply the hostname with ```vagrant reload```
+* Configure nodes in puppet
+  * ```web``` should install Apache
+  * ```db``` should not
+
+Docs:
+[Host name](http://docs.vagrantup.com/v1/docs/config/vm/host_name.html)
+[Node-resource](http://docs.puppetlabs.com/guides/language_guide.html#nodes)
+
+---
+
+# Parameterization
+
+```
+java::deployer {'smat':
+  public_key => 'ssh-rsa AAAAB3Nc2...',
+}
+```
+
+```
+java::deployer {'smat':
+  ensure => absent,
+}
+```
+
+---
+class: smaller, small-code
+
+```
+define java::deployer($public_key, $ensure = present) {
+  $directory = $ensure ? {
+    present => 'directory',
+    default => $ensure
+  }
+  user {$name:
+    ensure => $ensure,
+    managehome => true,
+    home => "/home/${name}",
+  }
+  file {"/home/$name/.ssh":
+    ensure => $directory,
+    mode => 0755,
+  }
+  file {"/home/$name/.ssh/authorized_keys":
+    ensure => $ensure,
+    content => $public_key,
+    mode => 0644,
+  }
+}
+```
+
+---
+
+# Previous slide
+
+* Defined resource
+  * Implicit variable ```$name```
+* Paramteres
+* Puppet language (case)
+* Variables
+* Difference between "" and ''
+
+---
+
+# Define vs Class
+
+* Define: Multiple instances
+  * Web-site
+  * Database-schema
+* Class: Singleton
+  * Web-server
+  * Database-server
+
+---
+
+# Fileserver
+
+* Puppet has an internal fileserver
+* Files in ```files/``` and ```templates/``` are available
+
+---
+class: small-code
+
+# Fileserver
+
+```
+class ssh::server {
+  file { '/etc/sshd_config':
+    ensure => present,
+    source => "puppet:///modules/ssh/sshd_config"
+  }
+}
+```
+
+```bash
+manifests/ssh/files/sshd_config
+```
+
+---
+class: small-code
+
+# Templates
+
+* ERB (Embedded Ruby) files
+* Inherits variables from resource
+
+---
+class: small-code
+
+# Templates
+
+```ruby
+class ssh::server($listen = '0.0.0.0') {
+  file { '/etc/sshd_config':
+    ensure => present,
+    content => template("ssh/sshd_config.erb")
+  }
+}
+```
+
+```bash
+manifests/ssh/templates/sshd_config.erb
+```
+
+---
+class: small-code
+
+# Templates
+
+```erb
+ListenAddress <%= listen %>
+```
+
+---
+class: smaller, small-code
+
+# Exercise (30 min):
+
+* Create a Puppet resource to create a site/virtual host in Apache
+* An example config-file is ```apache.conf``` in repo
+* Apache loads all files in ```/etc/httpd/conf.d```
+* Each site should have its own user, that can add HTML-files
+* Each site should use its own port
+* Create a ```index.html``` for each site
+* Use port forward in Vagrant to forward new site to your machine locally
+* Test that everything works
+
+---
+class: smaller, small-code
+
+# Bonus: Reverse proxy
+
+It is possible to configure Apache to forward request to another webserver. This is often used in test environments to let multiple applications share the same port.
+
+Example: You have two applications:
+
+* App1 on http://localhost:8001/app1
+* App2 on http://localhost:8002/app2.
+
+Apache could then let all requests to /app1 be forwarded to port 8001 and all requests to /app2 be forwarded to port 8002
+
+---
+
+# Bonus: Reverse proxy
+
+* Create a Puppet resource to create a site with multiple reverse proxies
+* Let ```/google``` on your Apache show google.com, and ```/bing``` show bing.com
+
+---
+
+    </textarea>
+    <div id="slideshow"></div>
+  </body>
+</html>
