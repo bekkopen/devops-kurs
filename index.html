@@ -413,7 +413,7 @@ modules/
 
 # Modules
 
-```
+```ruby
 include web::server
 ```
 
@@ -478,40 +478,69 @@ Docs:
 [Node-resource](http://docs.puppetlabs.com/guides/language_guide.html#nodes)
 
 ---
+class: small-code
+
+# Define
+
+```ruby
+define java::deployer($public_key = nil, $ensure = present) {
+  file {"/home/${name}/.ssh/authorized_keys":
+    content => $public_key,
+    ensure => $ensure,
+  }
+}
+```
+
+---
 
 # Parameterization
 
-```
+```ruby
 java::deployer {'smat':
   public_key => 'ssh-rsa AAAAB3Nc2...',
 }
 ```
 
-```
+```ruby
 java::deployer {'smat':
   ensure => absent,
 }
 ```
 
 ---
+
+# Define vs Class
+
+* Define: Multiple instances
+  * Web-site
+  * Database-schema
+* Class: Singleton
+  * Web-server
+  * Database-server
+
+---
+
+# Putting it all together
+
+---
 class: smaller, small-code
 
-```
+```ruby
 define java::deployer($public_key, $ensure = present) {
-  $directory = $ensure ? {
-    present => 'directory',
-    default => $ensure
-  }
   user {$name:
     ensure => $ensure,
     managehome => true,
     home => "/home/${name}",
   }
-  file {"/home/$name/.ssh":
+  $directory = $ensure ? {
+    present => 'directory',
+    default => $ensure
+  }
+  file {"/home/${name}/.ssh":
     ensure => $directory,
     mode => 0755,
   }
-  file {"/home/$name/.ssh/authorized_keys":
+  file {"/home/${name}/.ssh/authorized_keys":
     ensure => $ensure,
     content => $public_key,
     mode => 0644,
@@ -532,17 +561,6 @@ define java::deployer($public_key, $ensure = present) {
 
 ---
 
-# Define vs Class
-
-* Define: Multiple instances
-  * Web-site
-  * Database-schema
-* Class: Singleton
-  * Web-server
-  * Database-server
-
----
-
 # Fileserver
 
 * Puppet has an internal fileserver
@@ -553,7 +571,7 @@ class: small-code
 
 # Fileserver
 
-```
+```ruby
 class ssh::server {
   file { '/etc/sshd_config':
     ensure => present,
@@ -563,7 +581,7 @@ class ssh::server {
 ```
 
 ```bash
-manifests/ssh/files/sshd_config
+modules/ssh/files/sshd_config
 ```
 
 ---
@@ -589,7 +607,7 @@ class ssh::server($listen = '0.0.0.0') {
 ```
 
 ```bash
-manifests/ssh/templates/sshd_config.erb
+modules/ssh/templates/sshd_config.erb
 ```
 
 ---
