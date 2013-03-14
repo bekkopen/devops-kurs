@@ -298,7 +298,6 @@ class ssh {
 
   service {'sshd':
     ensure => running,
-    require => Package['openssh-clients'],
   }
 }
 ```
