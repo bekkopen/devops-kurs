@@ -328,7 +328,7 @@ class ssh {
 
   service {'sshd':
     ensure => running,
-    subcribe => File['/etc/sshd_config'],
+    subscribe => File['/etc/sshd_config'],
   }
 }
 ```
