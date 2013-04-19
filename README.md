@@ -3,13 +3,15 @@ Todo before the workshop
 
 * Download newest version of [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Install ruby 1.9.x (see instructions later in the README)
+* Clone this repo.
 * Run the following commands while in the same folder as the Gemfile
 * ```gem install bundler```
 * ```bundle install``` Installs Vagrant
 * ```vagrant up``` Try to start up the virtual machine (downloads a large image)
+* ```vagrant ssh``` Log in to the VM
 * ```vagrant halt``` Stop the virtual machine
 
-If all these steps work without errors, you are ready for the workshop.
+If you're able to run ```vagrant ssh``` without errors, you should be ok.
 
 
 Ruby on Windows
