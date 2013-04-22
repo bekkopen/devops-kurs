@@ -58,3 +58,7 @@ rvm use 1.9.3
 ruby --version            # Check that it show the correct version
 ```
 
+The slides:
+-----------
+
+http://bekkopen.github.com/devops-kurs
