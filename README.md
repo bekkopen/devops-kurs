@@ -2,8 +2,8 @@ Todo before the workshop
 ========================
 
 * Download newest version of [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-* Install ruby 1.9.x (see instructions later in the README)
 * Clone this repo.
+* Install ruby 1.9.x (see instructions later in the README)
 * Run the following commands while in the same folder as the Gemfile
 * ```gem install bundler```
 * ```bundle install``` Installs Vagrant
