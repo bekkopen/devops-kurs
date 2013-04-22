@@ -263,7 +263,7 @@ user { 'smat':
 ```ruby
 file { '/vagrant/testfile':
   ensure => present,
-  content => "echo 'Hello'",
+  content => "Some file content",
   owner  => vagrant,
   group => vagrant,
 }
@@ -286,7 +286,7 @@ file { '/vagrant/testfile':
 * Use ```vagrant ssh web``` to enter your VM
 * ```cd /vagrant``` to access your local files
 * Create a recipie that
-  * Creates [a user](http://docs.puppetlabs.com/references/latest/type.html#user) ```bekk``` with managed home directory
+  * Creates [a user](http://docs.puppetlabs.com/references/latest/type.html#user) ```devops``` with managed home directory
   * Creates [a file](http://docs.puppetlabs.com/references/latest/type.html#file) ```.bashrc``` in the user home directory
 * Do next exercise
 
