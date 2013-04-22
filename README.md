@@ -15,6 +15,11 @@ If you're able to run ```vagrant ssh``` without errors, you should be ok.
 
 NB: For some PCs you might have to enable virtualization in the BIOS.
 
+The slides:
+-----------
+
+http://bekkopen.github.com/devops-kurs
+
 Ruby on Windows
 ---------------
 
@@ -58,8 +63,3 @@ rvm install 1.9.3
 rvm use 1.9.3
 ruby --version            # Check that it show the correct version
 ```
-
-The slides:
------------
-
-http://bekkopen.github.com/devops-kurs
