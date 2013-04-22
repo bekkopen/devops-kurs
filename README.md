@@ -13,6 +13,7 @@ Todo before the workshop
 
 If you're able to run ```vagrant ssh``` without errors, you should be ok.
 
+NB: For some PCs you might have to enable virtualization in the BIOS.
 
 Ruby on Windows
 ---------------
