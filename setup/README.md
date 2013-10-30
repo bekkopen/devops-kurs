@@ -1,6 +1,8 @@
 Setup
 =====
 
+YOU DO NOT NEED TO DO THESE STEPS FOR THE COURSE
+
 * Download newest version of [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Install ruby 1.9.x (Recommending to use either [rbenv](https://github.com/sstephenson/rbenv/) or [rvm](https://rvm.io/)
 * ```gem install bundler```
@@ -10,7 +12,6 @@ Setup of new virtual box
 ========================
 
 This show how we created the environment for the workshop.
-YOU DO NOT NEED TO DO THESE STEPS
 
 This is how we built the box used in the excercises.
 
