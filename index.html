@@ -286,7 +286,7 @@ file { '/vagrant/testfile':
 * Run
   * ```vagrant ssh web```
   * ```cd /vagrant/manifests```
-  * ```puppet apply <filename>.pp```
+  * ```sudo puppet apply <filename>.pp```
 
 ---
 
@@ -436,6 +436,15 @@ modules/
 ---
 
 # Modules
+
+```
+modules/web/manifests/server.pp
+```
+
+```ruby
+class web::server {
+}
+```
 
 ```ruby
 include web::server
