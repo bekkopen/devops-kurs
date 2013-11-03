@@ -162,16 +162,15 @@ class: small-code
 # Example
 
 ```ruby
-Vagrant::Config.run do |config|
+Vagrant.configure("2") do |config|
   # Shared config
   config.vm.box = "devops-kurs"
 
-  config.vm.define :web do |web_config|
-    web_config.vm.provision :shell, :path => "bin/web.sh"
+  config.vm.define "web" do |web|
+    web.vm.provision "shell", path: "bin/web.sh"
   end
-
-  config.vm.define :db do |db_config|
-    db_config.vm.provision :shell, :path => "bin/db.sh"
+  config.vm.define "db" do |db|
+    db.vm.provision "shell", path: "bin/db.sh"
   end
 end
 ```
