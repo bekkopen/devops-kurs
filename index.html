@@ -133,8 +133,8 @@ class: small-code
 ```Vagrantfile``` is Ruby code!
 
 ```ruby
-Vagrant::Config.run do |config|
-  config.vm.provision :shell, :path => "bin/test.sh"
+Vagrant.configure("2") do |config|
+  config.vm.provision "shell", path: "test.sh"
 end
 ```
 
@@ -146,7 +146,7 @@ end
 * The script should create ```foo.txt``` with some content
 * Run ```vagrant provision``` to test your setup
 
-[Vagrant shell provisioning](http://docs.vagrantup.com/v1/docs/provisioners/shell.html)
+[Vagrant shell provisioning](http://docs.vagrantup.com/v2/provisioning/shell.html)
 
 ---
 
@@ -200,8 +200,8 @@ end
 * Use two different provisioning scripts for the VMs
 
 Docs:
-[Multiple VMs](http://docs.vagrantup.com/v1/docs/multivm.html)<br/>
-[Config reference](http://docs.vagrantup.com/v1/docs/vagrantfile.html)
+[Multiple VMs](http://docs.vagrantup.com/v2/multi-machine/index.html)<br/>
+[Config reference](http://docs.vagrantup.com/v2/vagrantfile/index.html)
 
 ---
 
@@ -290,7 +290,7 @@ file { '/vagrant/testfile':
 * ```vagrant provision web``` should run your puppet recipie
 
 Docs:
-[Vagrant documentation](http://docs.vagrantup.com/v1/docs/provisioners/puppet.html)
+[Vagrant documentation](http://docs.vagrantup.com/v2/provisioning/puppet_apply.html)
 
 ---
 class: small-code
@@ -386,7 +386,7 @@ service {'iptables':
 Docs:
 [Package](http://docs.puppetlabs.com/references/latest/type.html#package)
 [Service](http://docs.puppetlabs.com/references/latest/type.html#service)
-[Vagrant docs](http://docs.vagrantup.com/v1/docs/config/vm/forward_port.html)
+[Vagrant docs](http://docs.vagrantup.com/v2/networking/forwarded_ports.html)
 
 ---
 class: small-code
@@ -440,7 +440,7 @@ include web::server
 
 Hint: Vagrant must know which directory your modules are in.
 
-Docs [Vagrant doc](http://docs-v1.vagrantup.com/v1/docs/provisioners/puppet.html)
+Docs [Vagrant doc](http://docs.vagrantup.com/v2/provisioning/puppet_apply.html)
 
 ---
 class: small-code
@@ -488,8 +488,8 @@ node "*.domain.com", "somehost.otherdomain.com" inherits app {
   * ```db``` should not
 
 Docs:
-[Host name](http://docs.vagrantup.com/v1/docs/config/vm/host_name.html)
-[Node-resource](http://docs.puppetlabs.com/guides/language_guide.html#nodes)
+[Host name](http://docs.vagrantup.com/v2/vagrantfile/machine_settings.html)
+[Node resource](http://docs.puppetlabs.com/puppet/latest/reference/lang_node_definitions.html)
 
 ---
 class: center, middle
