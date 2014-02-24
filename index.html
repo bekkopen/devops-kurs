@@ -211,6 +211,7 @@ end
 
 # Exercise (10 min):
 
+* Protip: run ```vagrant destroy``` before this exercise
 * Modify your ```Vagrantfile``` to create two virtual machines
 * Use two different provisioning scripts for the VMs
 
@@ -389,6 +390,7 @@ service {'iptables':
 ```
 
 ---
+class: small small-code
 
 # Exercise (20 min):
 
@@ -396,6 +398,7 @@ service {'iptables':
 * Start Apache (httpd)
 * Disable firewall (iptables)
 * Forward port 80 from the VM to 8585 on the local machine
+* Remember to run ```vagrant reload``` to activate Vagrant changes
 * Open http://localhost:8585/ and see a result
 
 Docs:
