@@ -305,7 +305,7 @@ class: small-code, small
 
 * Configure Vagrant to run your puppet manifests
 * Use ```manifests/default.pp``` as your root puppet recipie
-* Use ```vagrant reload``` to activate changes in the Vagrantfile
+* Use ```vagrant reload web``` to activate changes in the Vagrantfile
 * ```vagrant provision web``` should run your puppet recipie
 
 Docs:
@@ -457,7 +457,7 @@ include web::server
 # Exercise (5 min):
 
 * Refactor Apache into a module
-* Check that nothing happens when you run ```vagrant provision```
+* Check that nothing happens when you run ```vagrant provision web```
 
 Hint: Vagrant must know which directory your modules are in.
 
@@ -717,9 +717,6 @@ Apache could then let all requests to /app1 be forwarded to port 8001 and all re
 # Sveinung Dalatun
 
 # Stian Mathiassen
-
-# Stein Inge Morisbak
-
 
     </textarea>
     <div id="slideshow"></div>
